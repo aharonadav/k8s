@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "aharon-terraform"
-    key    = "./terrafor.tfstate"
+    key    = "./terrafom.tfstate"
     region = "eu-west-1"
   }
 }
