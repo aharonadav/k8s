@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app
+  namespace: app1
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::553686865554:role/App1S3AccessRole

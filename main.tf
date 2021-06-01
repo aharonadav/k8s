@@ -17,3 +17,11 @@ provider "kubernetes" {
 module "k8s-cluster" {
   source = "./modules/k8s-cluster/"
 }
+
+module "rbac" {
+  source = "./modules/rbac/"
+}
+
+module "jenkins" {
+  source = "./modules/jenkins/"
+}
