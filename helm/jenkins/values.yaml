@@ -1,0 +1,6 @@
+name: jenkins
+ServiceAccount:
+  name: jenkins
+csi:
+    driver: efs.csi.aws.com
+    efs_id: fs-fa1ab3ce

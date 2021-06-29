@@ -1,5 +1,5 @@
 terraform.tfstate
-terrafor*
+terraform*
 kubeconfig*
 .terraform/*
 .terraform*

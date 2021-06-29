@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ .Values.name }}"
+  namespace: "{{ .Values.name }}"
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: efs-sc
+  csi:
+    driver: {{ .Values.csi.driver }}
+    volumeHandle: {{ .Values.csi.efs_id }}
