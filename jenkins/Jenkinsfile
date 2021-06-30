@@ -34,10 +34,8 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                container('docker') {
-                    dir('deployment'){
-                        sh "docker build -t app1 ."
-                    }
+                agent { label 'docker' }
+                    sh "docker build -t app1 ."
                 }
             }
         }
