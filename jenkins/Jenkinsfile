@@ -32,14 +32,10 @@ pipeline {
                 ]
             }
         }
-        stage('docker build') {
-            steps {
+        stage('Building image') {
+            steps{
                 script {
-                    container ('jnlp-docker-slave'){
-                        script {
-                            sh "docker --help"
-                        }
-                    }
+                    dockerImage = docker.build test
                 }
             }
         }
