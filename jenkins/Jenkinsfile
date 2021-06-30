@@ -34,8 +34,12 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                container('docker') {
-                    sh "docker build -t app1 ."
+                script{
+                    container('docker') {
+                        script {
+                            sh "docker build -t app1 ."
+                        }
+                    }
                 }
             }
         }
