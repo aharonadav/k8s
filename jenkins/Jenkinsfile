@@ -53,7 +53,9 @@ pipeline {
               }
             }
             steps {
-                sh "docker build -t app1 ."
+                container('docker') {
+                    sh "docker build -t app1 ."
+                }
             }
         }
     }
