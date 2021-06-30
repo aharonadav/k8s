@@ -1,12 +1,6 @@
 def github_credentials = 'aharon-github'
 def repo_url = 'https://github.com/aharonadav/k8s.git'
 
-podTemplate(label: 'docker', containers: [containerTemplate(image: 'docker', name: 'docker', command: 'cat', ttyEnabled: true)]) {
-    podTemplate(label: 'maven', containers: [containerTemplate(image: 'maven', name: 'maven', command: 'cat', ttyEnabled: true)]) {
-        // do stuff
-    }
-}
-
 environment {
     ECR = '553686865554.dkr.ecr.eu-west-1.amazonaws.com/k8s_demo'
 }
@@ -39,35 +33,6 @@ pipeline {
             }
         }
         stage('Docker Build') {
-            agent {
-              kubernetes {
-                //cloud 'kubernetes'
-                label 'docker'
-                yaml """
-                apiVersion: v1
-                kind: Pod
-                metadata:
-                  labels:
-                    some-label: random-value
-                spec:
-                  containers:
-                  - name: docker
-                    image: docker:latest
-                    command:
-                      - cat
-                    tty: true
-                    privileged: true
-                    volumeMounts:
-                      - name: dockersock
-                        mountPath: /var/run/docker.sock
-                  volumes:
-                  - name: dockersock
-                    hostPath:
-                      path: /var/run/docker.sock
-
-                    """
-              }
-            }
             steps {
                 container('docker') {
                     sh "docker build -t app1 ."
