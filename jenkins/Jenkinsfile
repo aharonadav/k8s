@@ -1,4 +1,7 @@
 def label = "master"
+def github_credentials = 'aharon-github'
+def repo_url = 'https://github.com/aharonadav/k8s.git'
+
 podTemplate(label: label, cloud: 'kubernetes') {
     node(label) {
         stage('Run shell') {
@@ -6,5 +9,17 @@ podTemplate(label: label, cloud: 'kubernetes') {
             sh 'chmod u+x ./kubectl'  
             sh './kubectl get pods -n default'
         }
+        stage('pull code') {
+            steps {
+                checkout([
+                    $class: 'GitSCM', 
+                    branches: [[name: '*/master']], 
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [[$class: 'CleanCheckout']], 
+                    submoduleCfg: [], 
+                    userRemoteConfigs: [[credentialsId: github_credentials, url: repo_url]]
+                ])
+            }
+        }        
     }
 }
