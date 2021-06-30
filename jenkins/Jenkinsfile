@@ -9,6 +9,7 @@ pipeline {
         kubernetes {
             //cloud 'kubernetes
             label 'master'
+            yamlFile 'KubernetesPod.yaml'
         }
     }
     stages {
@@ -20,24 +21,24 @@ pipeline {
             }
         }
         stage('pull code') {
-            checkout([
-                $class: 'GitSCM', 
-                branches: [[name: '*/main']], 
-                doGenerateSubmoduleConfigurations: false, 
-                extensions: [[$class: 'CleanCheckout']], 
-                submoduleCfg: [], 
-                userRemoteConfigs: [[credentialsId: github_credentials, url: repo_url]]
-            ])
+            steps {
+                checkout scm: [
+                    $class: 'GitSCM', 
+                    branches: [[name: '*/main']], 
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [[$class: 'CleanCheckout']], 
+                    submoduleCfg: [], 
+                    userRemoteConfigs: [[credentialsId: github_credentials, url: repo_url]]
+                ]
+            }
         }
         stage('docker build') {
-            dir('deployment'){
-                steps {
-                    container('docker') {
-                        sh "docker build -t webserver ."
-                        sh "docker image tag webserver:latest ${ECR}:${BUILD_NUMBER}"
-                        sh "docker push ${ECR}:${BUILD_NUMBER}"
+            steps {
+                script {
+                    container ('jnlp-docker-slave'){
+                        sh "docker --help"
                     }
-                } 
+                }
             }
         }
     }
