@@ -2,6 +2,9 @@ def label = "master"
 def github_credentials = 'aharon-github'
 def repo_url = 'https://github.com/aharonadav/k8s.git'
 
+environment {
+    ECR = '553686865554.dkr.ecr.eu-west-1.amazonaws.com/k8s_demo'
+}
 podTemplate(label: label, cloud: 'kubernetes') {
     node(label) {
         stage('Run shell') {
@@ -18,6 +21,14 @@ podTemplate(label: label, cloud: 'kubernetes') {
                 submoduleCfg: [], 
                 userRemoteConfigs: [[credentialsId: github_credentials, url: repo_url]]
             ])
+        }
+        stage('docker build') {
+            dir('deployment'){
+                sh "docker build -t webserver ."
+                sh "docker image tag webserver:latest ${ECR}:${BUILD_NUMBER}"
+                sh "docker push ${ECR}:${BUILD_NUMBER}"
+            }
+            
         }        
     }
 }
