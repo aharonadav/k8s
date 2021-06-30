@@ -33,11 +33,10 @@ pipeline {
             }
         }
         stage('Back-end') {
-            agent {
-                docker { image 'aharonadav/alpine-docker:1' }
-            }
             steps {
-                sh 'docker --help'
+                script{
+                    dockerImage = docker.build('test')
+                }
             }
         }
     }
