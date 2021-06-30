@@ -32,11 +32,12 @@ pipeline {
                 ]
             }
         }
-        stage('Building image') {
-            steps{
-                script {
-                    dockerImage = docker.build test
-                }
+        stage('Back-end') {
+            agent {
+                docker { image 'aharonadav/alpine-docker:1' }
+            }
+            steps {
+                sh 'docker --help'
             }
         }
     }
