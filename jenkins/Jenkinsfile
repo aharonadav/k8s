@@ -43,13 +43,29 @@ pipeline {
               kubernetes {
                 //cloud 'kubernetes'
                 label 'docker'
-                containerTemplate {
-                  name 'docker'
-                  image 'docker'
-                  ttyEnabled true
-                  command 'cat'
-                  privileged true
-                }
+                yaml """
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  labels:
+                    some-label: random-value
+                spec:
+                  containers:
+                  - name: docker
+                    image: docker:latest
+                    command:
+                      - cat
+                    tty: true
+                    privileged: true
+                    volumeMounts:
+                      - name: dockersock
+                        mountPath: /var/run/docker.sock
+                  volumes:
+                  - name: dockersock
+                    hostPath:
+                      path: /var/run/docker.sock
+
+                    """
               }
             }
             steps {
