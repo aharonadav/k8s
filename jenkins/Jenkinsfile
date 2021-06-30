@@ -33,7 +33,13 @@ pipeline {
             }
         }
         stage('Docker Build') {
-            agent { label 'docker' }
+            agent {
+                kubernetes {
+                //cloud 'kubernetes
+                defaultContainer 'docker'
+                yamlFile 'KubernetesPod.yaml'
+                }
+            }
             steps {
                 sh "docker build -t app1 ."
             }
