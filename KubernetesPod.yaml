@@ -4,29 +4,18 @@ metadata:
   labels:
     some-label: random-value
 spec:
+  containers:
+  - name: docker
+    image: docker:latest
+    command:
+      - cat
+    tty: true
+    privileged: true
+    volumeMounts:
+      - name: dockersock
+        mountPath: /var/run/docker.sock
   volumes:
-  - name: sharedvolume
-    emptyDir: {}
-  - name: docker-sock-volume
+  - name: dockersock
     hostPath:
       path: /var/run/docker.sock
-      type: File
-  containers:
-  - name: jnlp-slave
-    image: aimvector/jenkins-slave
-    command:
-    - cat
-    tty: true
-    stdin: true
-    volumeMounts:
-    - mountPath: '/var/run/docker.sock'
-      name: sharedvolume
-  - name: jnlp-docker-slave
-    image: aharonadav/alpine-docker:1
-    command:
-    - cat
-    tty: true
-    stdin: true
-    volumeMounts:
-    - mountPath: '/var/run/docker.sock'
-      name: docker-sock-volume
+    

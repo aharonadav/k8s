@@ -32,10 +32,12 @@ pipeline {
                 ]
             }
         }
-        stage('Back-end') {
+        stage('Docker Build') {
             steps {
-                script{
-                    dockerImage = docker.build('test')
+                container('docker') {
+                    dir('deployment'){
+                        sh "docker build -t app1 ."
+                    }
                 }
             }
         }
