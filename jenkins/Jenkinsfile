@@ -15,16 +15,10 @@ pipeline {
       }
       stage('pull code') {
           steps {
-              container ('jenkins-slave') {
-                checkout scm: [
-                    $class: 'GitSCM', 
-                    branches: [[name: '*/main']], 
-                    doGenerateSubmoduleConfigurations: false, 
-                    extensions: [[$class: 'CleanCheckout']], 
-                    submoduleCfg: [], 
-                    userRemoteConfigs: [[credentialsId: github_credentials, url: repo_url]]
-                ]
-              }
+              git branch: 'main',
+                  credentialsId: 'aharon-github',
+                  url: 'https://github.com/aharonadav/k8s.git'
+              sh 'ls -lat'
           }
       }
       stage('Run docker') {
