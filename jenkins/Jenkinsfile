@@ -13,6 +13,20 @@ pipeline {
             sh './kubectl get pods -n default'
           }  
       }
+      stage('pull code') {
+          steps {
+              container ('jenkins-slave') {
+                checkout scm: [
+                    $class: 'GitSCM', 
+                    branches: [[name: '*/main']], 
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [[$class: 'CleanCheckout']], 
+                    submoduleCfg: [], 
+                    userRemoteConfigs: [[credentialsId: github_credentials, url: repo_url]]
+                ]
+              }
+          }
+      }
       stage('Run docker') {
           steps {
               container('docker') {
