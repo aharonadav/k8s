@@ -24,13 +24,6 @@ pipeline {
               sh 'ls -lat'
           }
       }
-      stage('Run docker') {
-          steps {
-              container('docker') {
-                  sh 'docker build -t app1 .'
-              }
-          }
-      }
       stage('Push to ECR') {
         steps {
           script {
@@ -38,6 +31,7 @@ pipeline {
               script {
                 withAWS(credentials: 'AWS', region: 'eu-west-1') {
                   ecrLogin()
+                  sh 'docker build -t app1 .'
                   sh "docker image tag app1:latest ${env.ECR}:${BUILD_NUMBER}"
                   sh "docker push ${env.ECR}:${BUILD_NUMBER}"
                 }
