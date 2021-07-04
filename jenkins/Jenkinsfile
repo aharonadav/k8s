@@ -1,4 +1,7 @@
 pipeline {
+    environment {
+        ECR = '553686865554.dkr.ecr.eu-west-1.amazonaws.com/k8s_demo'
+    }    
     agent {
      kubernetes {
       //cloud 'kubernetes'
@@ -28,5 +31,13 @@ pipeline {
               }
           }
       }
-  }
+      stage('Push to ECR') {
+          steps{
+              script{
+                  sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${env.ECR}'
+                  sh 'docker push ${env.ECR}:${BUILD_NUMBER}'
+              }
+          }
+      }
+   }
 }
