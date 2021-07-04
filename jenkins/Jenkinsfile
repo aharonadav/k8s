@@ -36,7 +36,7 @@ pipeline {
           }
         }
       }
-      stage('Push to ECR')
+      stage('Push to ECR') {
         steps{
             script {
                 container('docker') {
