@@ -1,0 +1,42 @@
+def github_credentials = 'aharon-github'
+def repo_url = 'https://github.com/aharonadav/k8s.git'
+
+environment {
+    ECR = '553686865554.dkr.ecr.eu-west-1.amazonaws.com/k8s_demo'
+}
+pipeline {
+    agent {
+        kubernetes {
+            //cloud 'kubernetes
+            label 'master'
+            yamlFile 'KubernetesPod.yaml'
+        }
+    }
+    stages {
+        stage('Run shell') {
+            steps {
+                sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
+                sh 'chmod u+x ./kubectl'  
+                sh './kubectl get pods -n default'
+            }
+        }
+        stage('pull code') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'aharon-github',
+                    url: 'https://github.com/aharonadav/k8s.git'
+                sh 'ls -lat'
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                container('docker') {
+                        script {
+                            sh "docker build -t app1 ."
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

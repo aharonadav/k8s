@@ -85,3 +85,5 @@ Result: fs-fa1ab3ce
 - Get password "kubectl -n jenkins exec -it jenkins-b4d464798-4n6b9 cat /var/jenkins_home/secrets/initialAdminPassword"
 ---> jenkins-b4d464798-4n6b9
 bb2e3b84bd4341cfbabc768d0bca1bed
+
+Jenkins deployment version for Jenkins         image: jenkins/jenkins:2.235.1-lts-alpine

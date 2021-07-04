@@ -24,20 +24,31 @@ pipeline {
               sh 'ls -lat'
           }
       }
-      stage('Push to ECR') {
+      stage('Login to ECR') {
         steps {
           script {
-            container('docker') {
-              script {
-                withAWS(credentials: 'AWS', region: 'eu-west-1') {
+              container('awscli-jnlp') {
+                withAWS(credentials: 'ecr:eu-west-1:AWS', region: 'eu-west-1') {
+                  sh 'aws ecr get-login-password --region eu-west-1'
                   ecrLogin()
-                  sh 'docker build -t app1 .'
-                  sh "docker image tag app1:latest ${env.ECR}:${BUILD_NUMBER}"
-                  sh "docker push ${env.ECR}:${BUILD_NUMBER}"
                 }
               }
-            }
           }
+        }
+      }
+      stage('Push to ECR')
+        steps{
+            script {
+                container('docker') {
+                  script {
+                      withAWS(credentials: 'ecr:eu-west-1:AWS', region: 'eu-west-1') {
+                        sh 'docker build -t app1 .'
+                        sh "docker image tag app1:latest ${env.ECR}:${BUILD_NUMBER}"
+                        sh "docker push ${env.ECR}:${BUILD_NUMBER}"
+                      }
+                  }
+                }
+            }
         }
       }
    }
