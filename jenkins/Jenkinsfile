@@ -32,15 +32,19 @@ pipeline {
           }
       }
       stage('Push to ECR') {
-          steps{
-              withAWS(credentials: 'AWS', region: 'eu-west-1') {
-                 ecrLogin()
+        steps {
+          script {
+            container('docker') {
+              script {
+                withAWS(credentials: 'AWS', region: 'eu-west-1') {
+                  ecrLogin()
+                  sh "docker image tag app1:latest ${env.ECR}:${BUILD_NUMBER}"
+                  sh "docker push ${env.ECR}:${BUILD_NUMBER}"
+                }
               }
-              script{
-                  sh 'docker image tag app1:${BUILD_NUMBER} ${env.ECR}:{BUILD_NUMBER}'
-                  sh 'docker push ${env.ECR}:${BUILD_NUMBER}'
-              }
+            }
           }
+        }
       }
    }
 }
