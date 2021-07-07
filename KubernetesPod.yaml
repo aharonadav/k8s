@@ -31,7 +31,7 @@ spec:
         - mountPath: '/var/run/docker.sock'
           name: docker-sock-volume
   - name: main-jnlp-slave
-    image: aharonadav/main-jnlp-slave:latest
+    image: aharonadav/ubuntu-jnlp:latest
     command: ['cat']
     tty: true
     privileged: true
