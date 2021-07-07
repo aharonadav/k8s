@@ -26,14 +26,16 @@ pipeline {
       }
       stage('Build and push docker') {
         steps {
-          script {
-              container('main-jnlp-slave') {
-                  sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 553686865554.dkr.ecr.eu-west-1.amazonaws.com'
-                  sh 'docker build -t app1 .'
-                  sh "docker image tag app1:latest ${env.ECR}:${BUILD_NUMBER}"
-                  sh "docker push ${env.ECR}:${BUILD_NUMBER}"
-              }
-           }
+            dir('deployments/app1'){
+                script {
+                    container('main-jnlp-slave') {
+                        sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 553686865554.dkr.ecr.eu-west-1.amazonaws.com'
+                        sh 'docker build -t app1 .'
+                        sh "docker image tag app1:latest ${env.ECR}:${BUILD_NUMBER}"
+                        sh "docker push ${env.ECR}:${BUILD_NUMBER}"
+                    }
+                }
+            }
         }
       }
    }
