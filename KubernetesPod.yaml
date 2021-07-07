@@ -30,6 +30,16 @@ spec:
           name: sharedvolume
         - mountPath: '/var/run/docker.sock'
           name: docker-sock-volume
+  - name: main-jnlp-slave
+    image: aharonadav/main-jnlp-slave:latest
+    command: ['cat']
+    tty: true
+    privileged: true
+    volumeMounts:
+        - mountPath: '/opt/app/shared'
+          name: sharedvolume
+        - mountPath: '/var/run/docker.sock'
+          name: docker-sock-volume          
   volumes:
   - name: dockersock
     hostPath:
