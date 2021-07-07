@@ -29,6 +29,10 @@ pipeline {
           script {
               container('main-jnlp-slave') {
                 withAWS(credentials: 'ecr:eu-west-1:AWS', region: 'eu-west-1') {
+                  sh 'cat /root/.aws/credentials'  
+                  sh 'yum install -y yum-utils device-mapper-persistent-data lvm2'
+                  sh 'yum install docker'
+                  sh 'yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
                   sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 553686865554.dkr.ecr.eu-west-1.amazonaws.com'
                 }
               }
