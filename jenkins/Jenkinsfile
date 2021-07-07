@@ -24,7 +24,7 @@ pipeline {
               sh 'ls -lat'
           }
       }
-      stage('Login to ECR') {
+      stage('Build and push docker') {
         steps {
           script {
               container('main-jnlp-slave') {
@@ -34,19 +34,6 @@ pipeline {
                   sh "docker push ${env.ECR}:${BUILD_NUMBER}"
               }
            }
-        }
-      }
-      stage('Push to ECR') {
-        steps{
-            script {
-                container('docker') {
-                  script {
-                      withAWS(credentials: 'ecr:eu-west-1:AWS', region: 'eu-west-1') {
-                        sh "end"
-                      }
-                  }
-                }
-            }
         }
       }
    }
