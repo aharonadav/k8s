@@ -33,11 +33,15 @@ pipeline {
       }
       stage('Helm upgrade') {
           steps {
-            sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
-            sh 'chmod u+x ./kubectl'  
-            //sh './kubectl get pods -n default'
-            sh "helm upgrade jenkins jenkins -f jenkins/values.yaml -n jenkins --set serviceAccount.version=${BUILD_NUMBER}"
-          }  
+              dir('helm'){
+                script {
+                    container('main-jnlp-slave') {
+                      //sh './kubectl get pods -n default'
+                      sh "helm upgrade jenkins jenkins -f jenkins/values.yaml -n jenkins --set serviceAccount.version=${BUILD_NUMBER}"
+                    }
+                }
+              }
+          }
       }
    }
 }
