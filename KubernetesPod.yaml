@@ -36,10 +36,8 @@ spec:
     tty: true
     privileged: true
     volumeMounts:
-        - mountPath: '/opt/app/shared'
-          name: sharedvolume
-        - mountPath: '/var/run/docker.sock'
-          name: docker-sock-volume          
+        - name: dockersock
+          mountPath: /var/run/docker.sock         
   volumes:
   - name: dockersock
     hostPath:
