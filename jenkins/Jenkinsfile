@@ -23,7 +23,7 @@ pipeline {
                 script {
                     container('main-jnlp-slave') {
                         sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 553686865554.dkr.ecr.eu-west-1.amazonaws.com'
-                        sh 'docker build -t app1 .'
+                        sh "docker build -t app1:${BUILD_NUMBER} ."
                         sh "docker image tag app1:${BUILD_NUMBER} ${env.ECR}:${BUILD_NUMBER}"
                         sh "docker push ${env.ECR}:${BUILD_NUMBER}"
                     }
