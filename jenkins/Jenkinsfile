@@ -37,7 +37,7 @@ pipeline {
                 script {
                     container('main-jnlp-slave') {
                       //sh './kubectl get pods -n default'
-                      sh "helm upgrade jenkins jenkins -f jenkins/values.yaml -n jenkins --set serviceAccount.version=${BUILD_NUMBER}"
+                      sh "helm upgrade app1 app1 -f app1/values.yaml --set serviceAccount.version=${BUILD_NUMBER} -n app1"
                     }
                 }
               }
