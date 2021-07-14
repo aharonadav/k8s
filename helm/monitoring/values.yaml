@@ -1,0 +1,19 @@
+
+namespace: monitoring
+
+prometheus:
+  #endpoint to the api server I.E 
+  k8-api-server: https://kubernetes.default
+  service:
+    # ! DO NOT USE prometheus as a name: https://github.com/kubernetes/kubernetes/issues/25573
+    name: prometheus-svc
+    port: 9090
+  spec:
+    image: prom/prometheus:v2.0.0
+grafana:
+  service:
+    name: grafana
+  spec:
+    image: grafana/grafana:5.2.0
+  prometheus:
+    endpoint: http://prometheus-svc:9090
