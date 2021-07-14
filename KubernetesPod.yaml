@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: docker
+    image: docker:latest
+    command: ['cat']
+    tty: true
+    privileged: true
+    volumeMounts:
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+  - name: jenkins-slave
+    image: jenkins/jnlp-slave
+    command: ['cat']
+    tty: true
+    privileged: true
+    volumeMounts:
+        - mountPath: '/opt/app/shared'
+          name: sharedvolume
+        - mountPath: '/var/run/docker.sock'
+          name: docker-sock-volume
+  - name: awscli-jnlp
+    image: amazon/aws-cli:latest
+    command: ['cat']
+    tty: true
+    privileged: true
+    volumeMounts:
+        - mountPath: '/opt/app/shared'
+          name: sharedvolume
+        - mountPath: '/var/run/docker.sock'
+          name: docker-sock-volume
+  - name: main-jnlp-slave
+    image: aharonadav/ubuntu-jnlp:latest
+    command: ['cat']
+    tty: true
+    privileged: true
+    volumeMounts:
+        - name: sharedvolume
+          mountPath: '/opt/app/shared'
+        - name: dockersock
+          mountPath: /var/run/docker.sock         
+  volumes:
+  - name: dockersock
+    hostPath:
+        path: /var/run/docker.sock
+  - name: sharedvolume
+    emptyDir: {}
+  - name: docker-sock-volume

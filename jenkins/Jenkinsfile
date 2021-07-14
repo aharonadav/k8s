@@ -1,0 +1,47 @@
+pipeline {
+    environment {
+        ECR = '553686865554.dkr.ecr.eu-west-1.amazonaws.com/k8s_demo'
+    }    
+    agent {
+     kubernetes {
+      //cloud 'kubernetes'
+      yamlFile 'KubernetesPod.yaml'
+    }
+  }
+  stages {
+      stage('pull code') {
+          steps {
+              git branch: 'main',
+                  credentialsId: 'aharon-github',
+                  url: 'https://github.com/aharonadav/k8s.git'
+              sh 'ls -lat'
+          }
+      }
+      stage('Build and push docker') {
+        steps {
+            dir('deployments/app1'){
+                script {
+                    container('main-jnlp-slave') {
+                        sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 553686865554.dkr.ecr.eu-west-1.amazonaws.com'
+                        sh "docker build -t app1:${BUILD_NUMBER} ."
+                        sh "docker image tag app1:${BUILD_NUMBER} ${env.ECR}:${BUILD_NUMBER}"
+                        sh "docker push ${env.ECR}:${BUILD_NUMBER}"
+                    }
+                }
+            }
+        }
+      }
+      stage('Helm upgrade') {
+          steps {
+              dir('helm'){
+                script {
+                    container('main-jnlp-slave') {
+                      //sh './kubectl get pods -n default'
+                      sh "helm upgrade app1 app1 -f app1/values.yaml --set serviceAccount.version=${BUILD_NUMBER} -n app1"
+                    }
+                }
+              }
+          }
+      }
+   }
+}
