@@ -1,12 +1,3 @@
-# Install aws-load-balancer-ingress controller
-https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
-
-  helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller \
-  --set clusterName=aharon-eks-IGwhFvOs \
-  --set serviceAccount.create=false \
-  --set serviceAccount.name=aws-load-balancer-controller \
-  -n kube-system
-
 # Prometheus & Grafana
 ## Prometheus
 kubectl create namespace prometheus
