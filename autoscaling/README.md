@@ -13,3 +13,14 @@ Installation:
 - git clone https://github.com/kubernetes/autoscaler.git
 - git checkout bb860357f691313fca499e973a5241747c2e38b2
 cd autoscaler/vertical-pod-autoscaler
+
+* We can preview installation by using the below command:
+./hack/vpa-process-yamls.sh print
+
+Then, install the VPA:
+
+./hack/vpa-up.sh
+
+Check the status of the pods (you should see some VPA related pods running):
+
+$ kubectl get pods -n kube-system

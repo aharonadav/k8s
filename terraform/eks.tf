@@ -2,7 +2,7 @@
 resource "aws_eks_cluster" "this" {
   name     = "${var.project}-cluster"
   role_arn = aws_iam_role.cluster.arn
-  version  = "1.21"
+  version  = "1.24"
 
   vpc_config {
     # security_group_ids      = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id]
@@ -77,4 +77,19 @@ resource "aws_security_group_rule" "cluster_outbound" {
   source_security_group_id = aws_security_group.eks_nodes.id
   to_port                  = 65535
   type                     = "egress"
+}
+
+data "aws_eks_cluster" "cluster" {
+  name = "${var.project}-cluster"
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = aws_eks_cluster.this.id
+}
+output "endpoint" {
+  value = aws_eks_cluster.this.endpoint
+}
+
+output "kubeconfig-certificate-authority-data" {
+  value = aws_eks_cluster.this.certificate_authority[0].data
 }
