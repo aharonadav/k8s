@@ -1,0 +1,293 @@
+
+
+Q:  Create a job that calculates pi to 2000 decimal points using the container with the image named perl
+and the following commands issued to the container:  ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+Once the job has completed, check the logs to and export the result to pi-result.txt.
+
+Q. Create a yaml file called nginx-deploy.yaml for a deployment of three replicas of nginx, listening on the container's port 80. 
+They should have the labels role=webserver and app=nginx. The deployment should be named nginx-deploy.
+Expose the deployment with a load balancer and use a curl statement on the IP address of the load balancer 
+to export the output to a file titled output.txt.
+
+Q.  Scale the deployment you just made down to 2 replicas
+
+ 
+ 
+Q. Create a pod called "haz-docs" with an nginx image listening on port 80. 
+Attach the pod to emptyDir storage, mounted to /tmp in the container. 
+Connect to the pod and create a file with zero bytes in the /tmp directory called my-doc.txt. 
+ 
+Q. Label the worker node of your cluster with rack=qa.
+
+ 
+Q. Create a deployment with two replicas of nginx:1.7.9. 
+The container listens on port 80. It should be named "web-dep" and be labeled 
+with tier=frontend with an annotation of AppVersion=3.4. 
+The containers must be running with the UID of 1000.
+ 
+Q. Upgrade the image in use by the web-dep deployment to nginx:1.9.
+
+ 
+ 
+Q. Roll the image in use by the web-dep deployment to the previous version. 
+Do not set the version number of the image explicitly for this command.
+
+ 
+ 
+Q. Expose the web-dep deployment as a service using a NodePort.
+ 
+ 
+Q.  Configure a DaemonSet to run the image k8s.gcr.io/pause:2.0 in the cluster.
+ 
+ 
+ 
+Q.  Configure the cluster to use 8.8.8.8 and 8.8.4.4 as upstream DNS servers.
+ 
+ 
+Q.  An app inside a container needs the IP address of the web-dep endpoint to be passed to it as an 
+environment variable called "ULTIMA". Save the yaml as env-ultima.yaml
+ 
+Q.  Figure out a way to create a pod with 3 replicas using the the nginx container that can have pods deployed 
+on a worker node and the master node if needed.
+
+ 
+Q.  Copy all Kubernetes scheduler logs into a logs directory in your home directory.
+
+
+Q.  Run the pod below until the counter in exceeds 30, export the log file into a file called counter-log.txt.
+
+ 
+ 
+Q.  Create a yaml file called db-secret.yaml for a secret called db-user-pass.
+The secret should have two fields: a username and password. 
+The username should be "superadmin" and the password should be "imamazing".
+
+Q.
+Create a ConfigMap called web-config that contains the following two entries:
+'web_port' set to 'localhost:8080'
+'external_url' set to 'reddit.com'
+Run a pod called web-config-pod running nginx, expose the configmap settings as environment variables inside the nginx container.
+
+Q.  Create a namespace called awsdb in your cluster.  
+Create a pod called db-deploy that has one container running mysql image, and one container running nginx:1.7.9
+In the same namespace create a pod called nginx-deploy with a single container running the image nginx:1.9.1.  
+Export the output of kubectl get pods for the awsdb namespace into a file called "pod-list.txt"
+
+## mysql requires a pv and pvc with the yaml to create them found here:
+https://kubernetes.io/docs/tasks/run-application/run-single-instance-stateful-application/#deploy-mysql
+
+## create the deployment yaml
+## make sure the workers have the correct file host paths /mnt/data
+
+
+
+Q.
+Create a pod running k8s.gcr.io/liveness with the following arguments:
+
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+
+and the following commands:
+
+        command:
+        - cat
+        - /tmp/healthy
+
+with an initial delay of 5 seconds and a probe period of 5 seconds
+
+Output the events of the description showing that the container started and then the health check failed.
+
+
+Q. This requires having a cluster with 2 worker nodes
+Safely remove one node from the cluster.  Print the output of the node status into a file "worker-removed.txt".
+Reboot the worker node.  
+Print the output of node status showing worker unable to be scheduled to "rebooted-worker.txt"
+Now bring the node back into the cluster and schedule several nginx pods to it, print the get pods wide output showing at least 
+one pod is on the node you rebooted.
+
+
+
+Q. Create a deployment running nginx, mount a volume called "hostvolume" with a container volume mount at /tmp 
+and mounted to the host at /data.  If the directory isn't there make sure it is created in the pod spec at run time.
+Go into the container and create an empty file called "my-doc.txt" inside the /tmp directory.  On the worker node 
+that it was scheduled to, go into the /data directory and output a list of the contents to list-output.txt showing 
+the file exists.
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: haz-docs2
+  name: haz-docs2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: haz-docs2
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: haz-docs2
+    spec:
+      containers:
+      - image: nginx
+        name: haz-docs2
+        volumeMounts:
+        - mountPath: /tmp
+          name: hostvolume
+        ports:
+        - containerPort: 80
+        resources: {}
+      volumes:
+      - name: hostvolume
+        hostPath: 
+          path: /data
+          type: DirectoryOrCreate
+status: {}
+
+
+
+### interesting way to quickly spin up busy box pod and run shell temporarily 
+kubectl run -i --tty --image busybox dns-test --restart=Never --rm /bin/sh 
+
+### useful tool sorting output from get objects:
+
+
+### to get a list of any of the jsonpath objects, just do a kubectl get pods -o json and it will
+list them like this, these are the json path items you can get under status:
+
+
+                }
+            }
+        ],
+        "hostIP": "192.168.0.3",
+        "phase": "Running",
+        "podIP": "10.244.2.33",
+        "qosClass": "BestEffort",
+        "startTime": "2019-03-09T22:52:09Z"
+    }
+
+
+use status.phase as example:  kubectl get pods --sort-by=.status.phase
+
+
+kubectl get pvc --sort-by=.spec.resources.requests.storage
+
+kubectl get namespaces --sort-by=.metadata.name
+
+https://elastisys.com/2018/12/10/backup-kubernetes-how-and-why/
+
+
+@lenardchristopher
+lenardchristopher commented on Mar 9, 2020
+For question 1, why did you base64 encode the password before creating the secrets? Secrets are already encoded by kubernetes.
+
+@bbensky
+bbensky commented on Apr 23, 2020
+For question 1, why did you base64 encode the password before creating the secrets? Secrets are already encoded by kubernetes.
+
+I think you're right - when creating secrets with kubectl the data is encoded for you. However, if you use a YAML file you first have to base64 encode the value.
+
+@gmcbrien
+gmcbrien commented on May 6, 2020
+Thanks for the questions - always useful to have some new angles to the questions.
+However, I think your questions are mostly, if not all, more directed at the CKAD exam, and not the CKA. Of course there will be some overlap, but for CKA I'm missing things like ServiceAccounts, RBAC, ETCD Backups, Certificates, Custom Scheduler, Cluster Upgrade, ClusterRoles, CSRs....
+
+@rajesh-chaudhary
+rajesh-chaudhary commented on Jun 19, 2020
+Question - _Create a pod called "haz-docs" with an nginx image listening on port 80.
+Attach the pod to emptyDir storage, mounted to /tmp in the container.
+Connect to the pod and create a file with zero bytes in the /tmp directory called my-doc.txt.
+
+You created a deployment instead of a pod.
+@tanygithub
+tanygithub commented on Jun 25, 2020
+Thanks for the questions - always useful to have some new angles to the questions.
+However, I think your questions are mostly, if not all, more directed at the CKAD exam, and not the CKA. Of course there will be some overlap, but for CKA I'm missing things like ServiceAccounts, RBAC, ETCD Backups, Certificates, Custom Scheduler, Cluster Upgrade, ClusterRoles, CSRs....
+
+I Agree, many questions are from CKAD syllabus. It would be really nice if you could have segregated the questions differently for CKA and CKAD. Thanks a lot
+
+@deepakcpakhale06
+deepakcpakhale06 commented on Aug 7, 2020
+Create a deployment with two replicas of nginx:1.7.9. The container listens on port 80. It should be named "web-dep" and be labeled with tier=frontend with an annotation of AppVersion=3.4. The containers must be running with the UID of 1000.
+
+In this question.. nginx can not be run as non root user(1000)
+
+@deepakcpakhale06
+deepakcpakhale06 commented on Aug 7, 2020
+Configure the cluster to use 8.8.8.8 and 8.8.4.4 as upstream DNS servers. for this question since coredns is the default dns right answer can be found at https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#coredns-configuration-equivalent-to-kube-dns
+
+@StevenJ09
+StevenJ09 commented on Aug 11, 2021
+These questions are helpful for CKA exam preparation. But I'd also recommend Study4Exam.Com for CKA practice questions similar to ones you would get in the exam. The most authentic and reliable resource that I've found so far after deep analysis.
+
+@devendrasinghrawat
+devendrasinghrawat commented on Sep 13, 2021
+Create a yaml file called db-secret.yaml for a secret called db-user-pass.
+The secret should have two fields: a username and password.
+The username should be "superadmin" and the password should be "imamazing".
+
+For this one the secrets keys have a ".txt" suffix which is not required in the question we should use --from-literal instead to --from-file.
+k create secret generic db-user-pass --from-literal=username=superadmin --from-literal=password=imamazing $DR > db-secret.yaml
+
+@devendrasinghrawat
+devendrasinghrawat commented on Sep 13, 2021 • 
+Q. Create a namespace called awsdb in your cluster.
+Create a pod called db-deploy that has one container running mysql image, and one container running nginx:1.7.9
+
+PV is not a must for mysql container though recommended. Setting up below is a must for mysql container to come up.
+You need to specify one of the following:
+- MYSQL_ROOT_PASSWORD
+- MYSQL_ALLOW_EMPTY_PASSWORD
+- MYSQL_RANDOM_ROOT_PASSWORD
+
+Working example:-
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: db-deploy
+  name: db-deploy
+  namespace: awsdb
+spec:
+  containers:
+  - image: nginx:1.7.9
+    name: db-deploy
+    resources: {}
+  - image: mysql
+    name: mysql
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: root
+@aharonadav
+ 
+Add heading textAdd bold text, <Cmd+b>Add italic text, <Cmd+i>
+Add a quote, <Cmd+Shift+.>Add code, <Cmd+e>Add a link, <Cmd+k>
+Add a bulleted list, <Cmd+Shift+8>Add a numbered list, <Cmd+Shift+7>Add a task list, <Cmd+Shift+l>
+Directly mention a user or team
+Reference an issue or pull request
+Leave a comment
+No file chosen
+Attach files by dragging & dropping, selecting or pasting them.
+Styling with Markdown is supported
+Footer
+© 2022 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+You have no unread notifications

@@ -1,4 +1,8 @@
-helm install goldilocks --namespace goldilocks --create-namespace --set installVPA=true fairwinds-stable/goldilocks
+### Goldilocks
+
+helm repo add fairwinds-stable https://charts.fairwinds.com/stable
+
+helm install goldilocks --namespace goldilocks --create-namespace --set installVPA=false fairwinds-stable/goldilocks
 
 helm repo add cowboysysop https://cowboysysop.github.io/charts/
 helm install vpa cowboysysop/vertical-pod-autoscaler
@@ -23,27 +27,8 @@ metadata:
     goldilocks.fairwinds.com/enabled: "true"
     goldilocks.fairwinds.com/vpa-update-mode: "off"
 
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ingress
-  namespace: kubecost
-  annotations:
-    kubernetes.io/ingress.class: nginx
-spec:
-  rules:
-  - host: "kubecost"
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: kubecost-cost-analyzer
-            port:
-              number: 9090
----
+
+## Ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
