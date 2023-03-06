@@ -209,3 +209,18 @@ resource "aws_security_group_rule" "control_plane_outbound" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
 }
+
+data "aws_subnets" "eks_vpc_data" {
+  filter {
+    name   = "vpc-id"
+    values = [aws_vpc.this.id]
+  }
+  tags = {
+    "kubernetes.io/role/internal-elb" = "1"
+  }
+}
+
+data "aws_subnet" "eks_subnet_data" {
+  for_each = toset(data.aws_subnets.eks_vpc_data.ids)
+  id       = each.value
+}

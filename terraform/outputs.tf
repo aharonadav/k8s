@@ -10,3 +10,11 @@ output "cluster_endpoint" {
 output "cluster_ca_certificate" {
   value = aws_eks_cluster.this.certificate_authority[0].data
 }
+
+output "subnet_cidr_blocks" {
+  value = [for s in data.aws_subnet.eks_subnet_data : s.cidr_block]
+}
+
+output "subnet_cidr_blocks_ids" {
+  value = [for s in data.aws_subnet.eks_subnet_data : s.id]
+}
