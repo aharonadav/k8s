@@ -127,6 +127,5 @@ curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-i
 | xargs -0 aws cloudwatch put-dashboard --dashboard-name ${DASHBOARD_NAME} --dashboard-body
 ```
 3. 
-![alt text](./images/cloudwatch_eks_dashboard.png)
-![alt text](./images/fluentbit_cloudwatch.png)
+![alt text](./cloudwatch_eks_dashboard.png)
 
