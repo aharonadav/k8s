@@ -62,4 +62,4 @@ eksctl create iamserviceaccount \
 
 # Add a policy to the cluster's IAM role (EC2 launch type only)
 # To set up the IAM policy in a cluster for Prometheus support
-1. Open the Amazon EC2 console at <a href="doc:https://console.amazonaws.cn/ec2/" target="_blank">EC2</a>
+1. Open the Amazon EC2 console at [link(https://console.amazonaws.cn/ec2/)]
