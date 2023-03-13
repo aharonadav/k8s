@@ -128,4 +128,5 @@ curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-i
 ```
 3. 
 ![alt text](./images/cloudwatch_eks_dashboard.png)
+![alt text](./images/fluentbit_cloudwatch.png)
 
