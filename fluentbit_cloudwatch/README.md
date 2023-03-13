@@ -83,3 +83,49 @@ kubectl get namespace amazon-cloudwatch
 ```
 kubectl create namespace amazon-cloudwatch
 ```
+3. Download the YAML file for the agent by entering the following command:
+```
+curl -O https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/prometheus-eks.yaml
+```
+4. Open the file with a text editor, and search for the cwagentconfig.json block of the file.
+5. Add the highlighted lines, specifying the Region that you want:
+```
+cwagentconfig.json: |
+    {
+      "agent": {
+        "region": "eu-west-1"
+      },
+      "logs": { ...
+
+```
+6. Save the file and deploy the agent using your updated file.
+```
+kubectl apply -f prometheus-eks.yaml
+```
+7. Verify the pod is running
+```
+kubectl get pod -l "app=cwagent-prometheus" -n amazon-cloudwatch
+```
+```
+NAME                                  READY   STATUS    RESTARTS   AGE
+cwagent-prometheus-66c7cb5588-w72mc   1/1     Running   0          69s
+```
+
+## Continue FluentBit installation
+1. Create environment variables, replacing the values below to match your deployment.
+```
+DASHBOARD_NAME=fluentbit_cloudwatch
+REGION_NAME=eu-west-1
+CLUSTER_NAME=your_kubernetes_cluster_name
+```
+
+2. Enter the following command to create the dashboard.
+```
+curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/sample_cloudwatch_dashboards/fluent-bit/cw_dashboard_fluent_bit.json \
+| sed "s/{{YOUR_AWS_REGION}}/${REGION_NAME}/g" \
+| sed "s/{{YOUR_CLUSTER_NAME}}/${CLUSTER_NAME}/g" \
+| xargs -0 aws cloudwatch put-dashboard --dashboard-name ${DASHBOARD_NAME} --dashboard-body
+```
+3. 
+![alt text](./images/cloudwatch_eks_dashboard.png)
+
