@@ -62,4 +62,24 @@ eksctl create iamserviceaccount \
 
 # Add a policy to the cluster's IAM role (EC2 launch type only)
 # To set up the IAM policy in a cluster for Prometheus support
-1. Open the Amazon EC2 console at [(https://console.amazonaws.cn/ec2/)]
+1. Open the Amazon EC2 console at [https://console.amazonaws.cn/ec2/]
+2. In the navigation pane, choose Instances.
+3. You need to find the prefix of the IAM role name for the cluster. To do this, select the check box next to the name of an instance that is in the cluster, and choose Actions, Instance Settings, Attach/Replace IAM Role. Then copy the prefix of the IAM role, such as eksctl-dev303-workshop-nodegroup.
+4. Open the IAM console at https://console.amazonaws.cn/iam/.
+5. In the navigation pane, choose Roles.
+6. Use the search box to find the prefix that you copied earlier in this procedure, and choose that role.
+7. Choose Attach policies.
+8. Use the search box to find CloudWatchAgentServerPolicy. Select the check box next to CloudWatchAgentServerPolicy, and choose Attach policy.
+
+## Installing the CloudWatch agent to collect Prometheus metrics
+You must install the CloudWatch agent in the cluster to collect the metrics. How to install the agent differs for Amazon EKS clusters and Kubernetes clusters.
+
+# To install the CloudWatch agent with Prometheus support on an Amazon EKS cluster
+1. Enter the following command to check whether the amazon-cloudwatch namespace has already been created:
+```
+kubectl get namespace amazon-cloudwatch
+```
+2. If amazon-cloudwatch is not displayed in the results, create it by entering the following command:
+```
+kubectl create namespace amazon-cloudwatch
+```
