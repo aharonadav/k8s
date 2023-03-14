@@ -164,4 +164,9 @@ kubectl apply -f cwagent-configmap.yaml
 
 ## Results:
 ![alt text](./images/cw_dashboard_graphs.png)
+
+* EKS Pods MAP
 ![alt text](./images/cw_insights_map.png)
+
+* Pod Insights
+![alt text](./images/pod_insights.png)
