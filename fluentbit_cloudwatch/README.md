@@ -126,13 +126,14 @@ curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-i
 | sed "s/{{YOUR_CLUSTER_NAME}}/${CLUSTER_NAME}/g" \
 | xargs -0 aws cloudwatch put-dashboard --dashboard-name ${DASHBOARD_NAME} --dashboard-body
 ```
-3. 
-![alt text](./images/cloudwatch_eks_dashboard.png)
 
 curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/prometheus-k8s.yaml | 
 sed "s/{{cluster_name}}/eks-dev-cluster/;s/{{region_name}}/eu-west-1/" | 
 kubectl apply -f 
 
+## Add CloudWatch Container Insights
+
+# Configure your environment variables
 ClusterName='MyCluster'
 LogRegion='REGION'
 FluentBitHttpPort='2020'
@@ -140,12 +141,26 @@ FluentBitReadFromHead='Off'
 [[ ${FluentBitReadFromHead} = 'On' ]] && FluentBitReadFromTail='Off'|| FluentBitReadFromTail='On'
 [[ -z ${FluentBitHttpPort} ]] && FluentBitHttpServer='Off' || FluentBitHttpServer='On'
 
+# Install CloudWatch agent with FluentBit metrics
+```
 curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluent-bit-quickstart.yaml | sed 's/{{cluster_name}}/'${ClusterName}'/;s/{{region_name}}/'${LogRegion}'/;s/{{http_server_toggle}}/"'${FluentBitHttpServer}'"/;s/{{http_server_port}}/"'${FluentBitHttpPort}'"/;s/{{read_from_head}}/"'${FluentBitReadFromHead}'"/;s/{{read_from_tail}}/"'${FluentBitReadFromTail}'"/' | kubectl apply -f - 
+```
 
+# Add CloudWatch ServiceAccount
+```
 kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-serviceaccount.yaml
+```
 
+# Configure metrics parameters for CloudWatch using ConfigMap
+```
 curl -O https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-configmap.yaml
+```
 
 Edit cwagent-configmap.yaml file
-
+```
 kubectl apply -f cwagent-configmap.yaml
+```
+
+## Results:
+![alt text](./images/cw_dashboard_graphs.png)
+![alt text](./images/cw_insights_map.png)
