@@ -163,6 +163,7 @@ kubectl apply -f cwagent-configmap.yaml
 ```
 
 ## Results:
+* Processing Rate
 ![alt text](./images/cw_dashboard_graphs.png)
 
 * EKS Pods MAP
