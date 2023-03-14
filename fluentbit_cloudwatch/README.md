@@ -126,6 +126,7 @@ curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-i
 | sed "s/{{YOUR_CLUSTER_NAME}}/${CLUSTER_NAME}/g" \
 | xargs -0 aws cloudwatch put-dashboard --dashboard-name ${DASHBOARD_NAME} --dashboard-body
 ```
+![alt text](./images/cloudwatch_eks_dashboard.png)
 
 curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/prometheus-k8s.yaml | 
 sed "s/{{cluster_name}}/eks-dev-cluster/;s/{{region_name}}/eu-west-1/" | 
