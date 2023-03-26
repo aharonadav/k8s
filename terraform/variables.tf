@@ -23,6 +23,12 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
+variable "secondary_cidr_blocks" {
+  description = "Add secondery CIDR block for the VPC."
+  type        = string
+  default     = "172.0.0.0/16"
+}
+
 variable "subnet_cidr_bits" {
   description = "The number of subnet bits for the CIDR. For example, specifying a value 8 for this parameter will create a CIDR with a mask of /24."
   type        = number

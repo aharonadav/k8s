@@ -34,9 +34,9 @@ resource "aws_eks_node_group" "spots" {
   subnet_ids      = aws_subnet.private[*].id
 
   scaling_config {
-    desired_size = 4
-    max_size     = 10
-    min_size     = 4
+    desired_size = 0
+    max_size     = 5
+    min_size     = 0
   }
 
   ami_type       = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
