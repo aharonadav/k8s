@@ -18,3 +18,7 @@ output "subnet_cidr_blocks" {
 output "subnet_cidr_blocks_ids" {
   value = [for s in data.aws_subnet.eks_subnet_data : s.id]
 }
+
+output "oidc_github_actions" {
+  value = aws_iam_role.gitactions.arn
+}
