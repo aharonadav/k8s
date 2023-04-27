@@ -1,0 +1,1 @@
+curl -u "elastic:dx8iB711n7i93Gd2kVMPX51v" -k "https://a32d8dc9f3b644dbfbe4227bbf64a2cc-1618390837.eu-west-1.elb.amazonaws.com:9200/"
